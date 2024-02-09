@@ -8,51 +8,62 @@ const resolvers = {
         const userData = await User.findOne({ _id: context.user._id }).select(
           "-__v -password"
         );
+
         return userData;
       }
-      throw new AuthenticationError("Please login.");
+
+      throw AuthenticationError;
     },
   },
 
   Mutation: {
-    addUser: async (parent, { username, email, password }) => {
-      const user = await User.create({ username, email, password });
+    addUser: async (parent, args) => {
+      const user = await User.create(args);
       const token = signToken(user);
+
       return { token, user };
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
+
       if (!user) {
-        throw new AuthenticationError("Can't find this user");
+        throw AuthenticationError;
       }
+
       const correctPw = await user.isCorrectPassword(password);
+
       if (!correctPw) {
-        throw new AuthenticationError("Wrong password!");
+        throw AuthenticationError;
       }
+
       const token = signToken(user);
       return { token, user };
     },
     saveBook: async (parent, { bookData }, context) => {
       if (context.user) {
-        const updatedUser = await User.findOneAndUpdate(
+        const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: bookData } },
+          { $push: { savedBooks: bookData } },
           { new: true }
         );
+
         return updatedUser;
       }
-      throw new AuthenticationError("Please login!");
+
+      throw AuthenticationError;
     },
     removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
-        const updatedUser = await User.findByIdAndUpdate(
+        const updatedUser = await User.findOneAndUpdate(
           { _id: context.user._id },
           { $pull: { savedBooks: { bookId } } },
           { new: true }
         );
+
         return updatedUser;
       }
-      throw new AuthenticationError("Please login!");
+
+      throw AuthenticationError;
     },
   },
 };
