@@ -21,7 +21,7 @@ Technologies used:
 
 ## Installation/Live
 
-No install needed. Please visit the live website [here](https://book-search-engine-ib11.onrender.com/)!
+No install needed. Please visit the live website [here](https://google-books-search-spmg.onrender.com/)!
 
 If you would like to install it locally, please clone the repo to your local computer first. Once that is done, navigate to the root directory of the application within the terminal and run `npm i`. Then enter `npm run develop` and the application should open automatically within the browser.
 
